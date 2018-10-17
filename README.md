@@ -27,15 +27,75 @@ $(document).ready(function(){
       $("#owner a.add_fields").hide();
     })
     .on('cocoon:after-insert', function(){})
-    .on("", function(){})
-    .on("", function(){});
-  $()
-    .on()
-    .on()
-    .on();
+    .on("#owner_from_list", function(){
+      $("#owner_from_list").show();
+      $("#owner a.add_fileds").show();
+    })
+    .on("cocoon:after-remove", function(){});
+  $('#tasks')
+    .on('cocoon:before-insert', function(e,task_to_be_added){
+      taks_to_be_added.fadeIn('slow');
+    })
+    .on('cocoon:after-insert', function(e, added_task){
+      added_task.css("background", "red");
+    })
+    .on('cocoon:before-remove', function(e.task){
+      $(this).data('remove-timeout', 1000);
+      task.fadeOut('slow');
+    });
 });
 
+$(this).data('remove-timeout', 1000);
 
+$('#container').on('cocoon:before-insert', function(event, insertedItem){
+  var confirmation = confirm("Are you sure?");
+  if(confirmation === false ){
+    event.preventDefault();
+  }
+});
+
+$(document).ready(function(){
+  $("#owner a.add_fields").
+    data("association-insertion-method". 'append').
+    data("association-insertion-traversal", 'closest').
+    data("association-insertion-node", '#parent_table');
+});
+
+$(document).ready(function(){
+  $("#owner a.add_fields").
+    data("association-insertion-method", "before").
+    data("asociation-insertion-node", 'this');
+});
+
+$(document).ready(function(){
+  $(".add_sub_task a").
+    data("association-insertion-method", 'append').
+    data("association-insertion-node", function(link){
+      return link.closest('.row').next('.row').find('.sub_tasks_form')
+    });
+});
+
+```
+
+```
+.row
+  .col-lg-12
+    .add_sub_task= link_to_add_association 'add a new sub task', f, :sub_tasks
+.row
+  .col-lg-12
+    .sub_tasks_form
+      fileds_for :sub_tasks do |sub_task_form|
+        = render 'sub_task_fields', f: sub_task_form
+
+en:
+  cocoon:
+    defaults:
+      add: "Add record"
+      remove: "Remove record"
+    tasks:
+      add: "Add new task"
+      remove: "Remove old task"
+      
 ```
 
 ```ruby
@@ -51,6 +111,21 @@ def project_params
   params.require(:project).permit(:name, :description, tasks_attributes: [:id, :description, :done, :_destroy])
 end
 
+class CommentDetector
+  def initialize(comment)
+    @comment = comment
+  end
+  def formatted_created_at
+    @comment.created_at.to_formatted_s(:short)
+  end
+  def method_missing(method_sym, *args)
+    if @comment.respond_to?(method_sym)
+      @comment.send(method_sym, *args)
+    else
+      super
+    end
+  end
+end
 
 
 ```
